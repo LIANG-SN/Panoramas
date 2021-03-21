@@ -24,6 +24,11 @@ def makeTestPattern(patch_width=9, nbits=256):
     #############################
     # TO DO ...
     # Generate testpattern here
+    compareX = np.random.randint(-patch_width / 2, patch_width / 2, (nbits, 2))
+    compareY = np.random.randint(-patch_width / 2, patch_width / 2, (nbits, 2))
+    # result = np.column_stack((compareX, compareY))
+    # np.save('../results/testPattern.npy', result)
+    # print(np.load('testPattern.npy').shape)
     return  compareX, compareY
 
 # load test pattern for Brief
@@ -37,7 +42,7 @@ else:
     if not os.path.isdir('../results'):
         os.mkdir('../results')
     np.save(test_pattern_file, [compareX, compareY])
-
+#print(np.load(test_pattern_file).shape)
 def computeBrief(im, gaussian_pyramid, locsDoG, k, levels,
     compareX, compareY):
     '''
@@ -61,6 +66,19 @@ def computeBrief(im, gaussian_pyramid, locsDoG, k, levels,
     ##############################
     # TO DO ...
     # compute locs, desc here
+    locs = []
+    desc = []
+    for kp in locsDoG:
+        if kp[0] > 3 and kp[0] < im.shape[1] - 4 and kp[1] > 3 and kp[1] < im.shape[0] - 4:
+            locs.append(kp)
+            temp = gaussian_pyramid[kp[1] + compareX[:, 1], kp[0] + compareX[:, 0], 0] \
+                 < gaussian_pyramid[kp[1] + compareY[:, 1], kp[0] + compareY[:, 0], 0]
+            # what about this
+            # temp = gaussian_pyramid[compareX[:, 0:1], 0] > gaussian_pyramid[compareY[:, 0:1], 0]
+            desc.append(temp)
+    locs = np.array(locs)
+    desc = np.array(desc)
+    # print(desc.shape)
     return locs, desc
 
 
@@ -79,6 +97,10 @@ def briefLite(im):
     '''
     ###################
     # TO DO ...
+    locsDoG, gaussian_pyramid = DoGdetector(im)
+    levels=[-1,0,1,2,3,4] # hard code this?
+    k=np.sqrt(2)
+    locs, desc = computeBrief(im, gaussian_pyramid, locsDoG, k, levels, compareX, compareY)
     return locs, desc
 
 def briefMatch(desc1, desc2, ratio=0.8):
@@ -127,18 +149,22 @@ def plotMatches(im1, im2, matches, locs1, locs2):
 if __name__ == '__main__':
     # test makeTestPattern
     compareX, compareY = makeTestPattern()
+    
     # test briefLite
-    im = cv2.imread('../data/model_chickenbroth.jpg')
-    locs, desc = briefLite(im)  
-    fig = plt.figure()
-    plt.imshow(cv2.cvtColor(im, cv2.COLOR_BGR2GRAY), cmap='gray')
-    plt.plot(locs[:,0], locs[:,1], 'r.')
-    plt.draw()
-    plt.waitforbuttonpress(0)
-    plt.close(fig)
+    # im = cv2.imread('../data/model_chickenbroth.jpg')
+    # locs, desc = briefLite(im)  
+    # fig = plt.figure()
+    # plt.imshow(cv2.cvtColor(im, cv2.COLOR_BGR2GRAY), cmap='gray')
+    # plt.plot(locs[:,0], locs[:,1], 'r.')
+    # plt.draw()
+    # plt.waitforbuttonpress(0)
+    # plt.close(fig)
+
     # test matches
-    im1 = cv2.imread('../data/model_chickenbroth.jpg')
-    im2 = cv2.imread('../data/chickenbroth_01.jpg')
+    # im1 = cv2.imread('../data/model_chickenbroth.jpg')
+    # im2 = cv2.imread('../data/chickenbroth_01.jpg')
+    im1 = cv2.imread('../data/pf_scan_scaled.jpg')
+    im2 = cv2.imread('../data/pf_stand.jpg')
     locs1, desc1 = briefLite(im1)
     locs2, desc2 = briefLite(im2)
     matches = briefMatch(desc1, desc2)

@@ -71,7 +71,8 @@ def computePrincipalCurvature(DoG_pyramid):
           for j in range(0, w):
             H = np.array([[Dxx[i, j], Dxy[i, j]], [Dxy[i, j], Dyy[i, j]]])
             eig = np.linalg.eigvals(H)
-            curvature_level[i, j] = (H.trace() ** 2) / np.linalg.det(H)
+            if np.linalg.det(H) != 0:
+                curvature_level[i, j] = (H.trace() ** 2) / np.linalg.det(H)
             # test points bigger than thrshold
             # if curvature_level[i, j] > 12:
             #     print(i, j)
@@ -174,12 +175,6 @@ def DoGdetector(im, sigma0=1, k=np.sqrt(2), levels=[-1,0,1,2,3,4],
     pc_curvature = computePrincipalCurvature(DoG_pyr)
     locsDoG = getLocalExtrema(DoG_pyr, DoG_levels, pc_curvature, th_contrast, th_r)
 
-    for i in range(0, locsDoG.shape[0]):
-        coord = (locsDoG[i, 0], locsDoG[i, 1]) # check the coordinate
-        im = cv2.circle(im, coord, 1, color=(255,0,0), thickness=-1)
-    cv2.imshow('Discriptors', im)
-    cv2.waitKey(0) # press any key to exit
-    cv2.destroyAllWindows()
     
     return locsDoG, gauss_pyramid
 
@@ -208,5 +203,12 @@ if __name__ == '__main__':
     
     # test DoG detector
     locsDoG, gaussian_pyramid = DoGdetector(im)
+
+    for i in range(0, locsDoG.shape[0]):
+        coord = (locsDoG[i, 0], locsDoG[i, 1]) # check the coordinate
+        im = cv2.circle(im, coord, 1, color=(255,0,0), thickness=-1)
+    cv2.imshow('Discriptors', im)
+    cv2.waitKey(0) # press any key to exit
+    cv2.destroyAllWindows()
 
 

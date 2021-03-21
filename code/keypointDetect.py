@@ -67,15 +67,26 @@ def computePrincipalCurvature(DoG_pyramid):
       Dxy = cv2.Sobel(DoG_pyramid[:, :, k], cv2.CV_32F, 1, 1)
       Dyy = cv2.Sobel(DoG_pyramid[:, :, k], cv2.CV_32F, 0, 2)
       curvature_level = np.zeros((h, w))
-      for i in range(0, h):
-          for j in range(0, w):
-            H = np.array([[Dxx[i, j], Dxy[i, j]], [Dxy[i, j], Dyy[i, j]]])
-            eig = np.linalg.eigvals(H)
-            if np.linalg.det(H) != 0:
-                curvature_level[i, j] = (H.trace() ** 2) / np.linalg.det(H)
-            # test points bigger than thrshold
-            # if curvature_level[i, j] > 12:
-            #     print(i, j)
+      
+      # non-for-loop method
+      H = np.zeros((h, w, 2, 2))
+      H[:, :, 0, 0] = Dxx[:, :]
+      H[:, :, 0, 1] = Dxy[:, :]
+      H[:, :, 1, 0] = Dxy[:, :]
+      H[:, :, 1, 1] = Dyy[:, :]
+      eig = np.linalg.eigvals(H[:, :])
+      curvature_level[:, :] = ((eig[:, :, 0] + eig[:, :, 1]) ** 2) / np.linalg.det(H[:, :])
+      
+      # for loop method
+    #   for i in range(0, h):
+    #       for j in range(0, w):
+    #         H = np.array([[Dxx[i, j], Dxy[i, j]], [Dxy[i, j], Dyy[i, j]]])
+    #         eig = np.linalg.eigvals(H)
+    #         if np.linalg.det(H) != 0:
+    #             curvature_level[i, j] = (H.trace() ** 2) / np.linalg.det(H)
+    #         # test points bigger than thrshold
+    #         # if curvature_level[i, j] > 12:
+    #         #     print(i, j)
       principal_curvature.append(curvature_level)
     principal_curvature = np.stack(principal_curvature, axis=-1) # change the shape, let L be the last dim
     return principal_curvature

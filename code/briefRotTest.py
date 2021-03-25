@@ -2,6 +2,7 @@ import BRIEF as brief
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+
 if __name__ == '__main__':
 
     im = cv2.imread('../data/model_chickenbroth.jpg')
@@ -11,7 +12,7 @@ if __name__ == '__main__':
     x = range(0, 360, 10)
     for deg in x:
         M = cv2.getRotationMatrix2D((cols/2,rows/2), deg, 1)
-        dst = cv2.warpAffine(im,M,(cols,rows))
+        dst = cv2.warpAffine(im,M,(cols,rows)) # improve this
         
         locs1, desc1 = brief.briefLite(im)
         locs2, desc2 = brief.briefLite(dst)

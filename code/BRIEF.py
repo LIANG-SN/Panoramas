@@ -163,8 +163,8 @@ if __name__ == '__main__':
     # test matches
     # im1 = cv2.imread('../data/model_chickenbroth.jpg')
     # im2 = cv2.imread('../data/chickenbroth_01.jpg')
-    im1 = cv2.imread('../data/pf_scan_scaled.jpg')
-    im2 = cv2.imread('../data/pf_stand.jpg')
+    im1 = cv2.imread('../data/incline_L.png')
+    im2 = cv2.imread('../data/incline_R.png')
     locs1, desc1 = briefLite(im1)
     locs2, desc2 = briefLite(im2)
     matches = briefMatch(desc1, desc2)

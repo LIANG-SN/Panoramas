@@ -4,10 +4,10 @@
 
 - BRIEF feature matching:
 
-  <img src="results/textbookMatching.jpg" width="600">
+  <img src="results/textbookMatching.png" width="600">
 - Panorama stitching:
   - Original images
-    
+
     <img src="data/incline_L.png" width="300"> <img src="data/incline_R.png" width="300">
   - Stitched image
   

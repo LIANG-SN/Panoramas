@@ -3,12 +3,15 @@
 ## Demostration
 
 - BRIEF feature matching:
-  ![img](results/textbookMatching.jpg)
+
+  <img src="results/textbookMatching.jpg" width="600">
 - Panorama stitching:
   - Original images
-    <img src="data/incline_L.png" width="180"> <img src="data/incline_R.png" width="180">
+    
+    <img src="data/incline_L.png" width="300"> <img src="data/incline_R.png" width="300">
   - Stitched image
-    <img src="results/q6_3.jpg" width="360">
+  
+    <img src="results/q6_3.jpg" width="600">
 
 ## Algorithms
 
